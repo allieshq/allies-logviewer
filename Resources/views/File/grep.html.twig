@@ -1,0 +1,27 @@
+{% extends bap.layout %}
+{% import 'OroUIBundle::macros.html.twig' as UI %}
+
+{% block content %}
+    <div class='container-fluid page-title'>
+        <div class='navigation clearfix navbar-extra navbar-extra-right'>
+            <div class='row'>
+                <div class='pull-left pull-left-extra'>
+                    <div class='pull-left'>
+                        <h1 class='oro-subtitle'>{{ "allies.logviewer.navigation.titles.files_list.label"|trans }}</h1>
+                        <h2 class='oro-subtitle'>{{ "allies.logviewer.ui.actions.grep.label"|trans }}</h2>
+                    </div>
+                </div>
+                <div class='pull-right title-buttons-container invisible'></div>
+                <div class='page-title-center'>
+                    <div class='filters-state-view-container'></div>
+                </div>
+            </div>
+        </div>
+    </div>
+                    
+    <div class='layout-content scrollable-container'>
+        <div class='other-scroll-container'>
+            
+        </div>
+    </div>
+{% endblock content %}

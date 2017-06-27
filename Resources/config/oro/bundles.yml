@@ -1,0 +1,2 @@
+bundles:
+    - { name: Allies\Bundle\LogViewerBundle\AlliesLogViewerBundle, priority: 300 }

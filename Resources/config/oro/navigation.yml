@@ -1,0 +1,18 @@
+navigation:
+    menu_config:
+        items:
+            allies_logviewer_files_list:
+                label:      allies.logviewer.navigation.items.files_list.label
+                route:      allies_logviewer_file_index
+                extras:
+                    position:   200
+                    routes:     ['allies_logviewer_file_']
+        tree:
+            application_menu:
+                children:
+                    system_tab:
+                        children:
+                            allies_logviewer_files_list: ~
+                            
+    titles:
+        allies_logviewer_file_index:        allies.logviewer.navigation.titles.files_list.label

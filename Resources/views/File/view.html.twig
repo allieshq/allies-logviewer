@@ -1,0 +1,37 @@
+{% extends bap.layout %}
+{% import 'OroUIBundle::macros.html.twig' as UI %}
+
+{% block content %}
+    <div class='container-fluid page-title'>
+        <div class='navigation clearfix navbar-extra navbar-extra-right'>
+            <div class='row'>
+                <div class='pull-left pull-left-extra'>
+                    <div class='pull-left'>
+                        <h1 class='oro-subtitle'>{{ "allies.logviewer.navigation.titles.files_list.label"|trans }} : {{ filename }}</h1>
+                    </div>
+                </div>
+                <div class='pull-right title-buttons-container invisible'></div>
+                <div class='page-title-center'>
+                    <div class='filters-state-view-container'></div>
+                </div>
+            </div>
+        </div>
+    </div>
+                    
+    <div class='layout-content scrollable-container'>
+        <div class='other-scroll-container'>
+            <table class='table grid table-condensed table-bordered'>
+                <tbody>
+                    {% for row in output %}
+                        <tr>
+                            <td class='number-cell'><small>{{ row.lineNo }}</small></td>
+                            <td class='datetime-cell'><span style='white-space:nowrap'>{{ row.datetime }}</span></td>
+                            <td>{{ row.type }}</td>
+                            <td><pre>{{ row.message }}</pre></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock content %}

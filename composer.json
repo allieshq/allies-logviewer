@@ -1,0 +1,22 @@
+{
+    "name": "allies/oro-log-viewer",
+    "type": "symfony-bundle",
+    "description": "Allies Log Viewer Bundle for OroCRM",
+    "keywords":["CRM", "OroCRM"],
+    "license":"MIT",
+    "require": {
+        "php": ">=5.6",
+        "oro/platform": "2.*"
+    },
+    "autoload": {
+        "psr-0": { "Allies\\Bundle\\LogViewerBundle": "src/" }
+    },
+    "target-dir": "src/Allies/Bundle/LogViewerBundle",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    }
+}

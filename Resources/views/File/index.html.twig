@@ -1,0 +1,51 @@
+{% extends bap.layout %}
+{% import 'OroUIBundle::macros.html.twig' as UI %}
+
+{% block content %}
+    <div class='container-fluid page-title'>
+        <div class='navigation clearfix navbar-extra navbar-extra-right'>
+            <div class='row'>
+                <div class='pull-left pull-left-extra'>
+                    <div class='pull-left'>
+                        <h1 class='oro-subtitle'>{{ "allies.logviewer.navigation.titles.files_list.label"|trans }}</h1>
+                    </div>
+                </div>
+                <div class='pull-right title-buttons-container invisible'></div>
+                <div class='page-title-center'>
+                    <div class='filters-state-view-container'></div>
+                </div>
+            </div>
+        </div>
+    </div>
+                    
+    <div class='layout-content scrollable-container'>
+        <div class='other-scroll-container'>
+            <table class='table grid table-bordered'>
+                <thead>
+                    <tr>
+                        <th>{{ "allies.logviewer.file.info.filename.label"|trans }}</th>
+                        <th class='number-cell'>{{ "allies.logviewer.file.info.size_readable.label"|trans }}</th>
+                        <th class='number-cell'>{{ "allies.logviewer.file.info.lines.label"|trans }}</th>
+                        <th class='datetime-cell'>{{ "allies.logviewer.file.info.mtime_readable.label"|trans }}</th>
+                        <th class='number-cell'>{{ "allies.logviewer.file.info.readable.label"|trans }}</th>
+                        <th class='number-cell'>{{ "allies.logviewer.ui.actions.label"|trans }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for file in file_summary %}
+                        <tr>
+                            <th>{{ file.filename }}</th>
+                            <td class='number-cell'>{{ file.size_readable }}</td>
+                            <td class='number-cell'>{{ file.lines|number_format }}</td>
+                            <td class='datetime-cell'>{{ file.mtime_readable }}</td>
+                            <td class='number-cell'>{{ file.readable ? 'Yes'|trans : 'No'|trans }}</td>
+                            <td class='number-cell'>
+                                <a href="{{ path("allies_logviewer_file_view", {filename: file.filename}) }}">{{ "allies.logviewer.ui.actions.tail.label"|trans }}</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock content %}

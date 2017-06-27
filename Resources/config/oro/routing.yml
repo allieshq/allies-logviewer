@@ -1,0 +1,4 @@
+allies_logviewer_bundle:
+    resource:       "@AlliesLogViewerBundle/Controller"
+    type:           annotation
+    prefix:         /allies/logviewer

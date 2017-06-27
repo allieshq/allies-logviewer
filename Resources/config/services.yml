@@ -1,0 +1,8 @@
+parameters:
+    allies.logviewer.provider.file.class:                   Allies\Bundle\LogViewerBundle\Provider\FileProvider
+    
+services:
+    allies.logviewer.provider.file:
+        class:  %allies.logviewer.provider.file.class%
+        arguments:
+            - @kernel

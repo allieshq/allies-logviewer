@@ -1,0 +1,22 @@
+allies:
+    logviewer:
+        file:
+            info:
+                filename.label:         Filename
+                mtime.label:            MTime
+                mtime_readable.label:   Last Modified
+                size.label:             Filesize
+                size_readable.label:    Filesize
+                lines.label:            Lines
+                readable.label:         Readable?
+        
+        ui:
+            actions:
+                label:                  Actions
+                tail.label:             Tail
+                grep.label:             Grep
+        navigation:
+            items:
+                files_list.label:       Log Files
+            titles:
+                files_list.label:       Log Files
