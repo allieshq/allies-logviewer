@@ -7,8 +7,13 @@
             <div class='row'>
                 <div class='pull-left pull-left-extra'>
                     <div class='pull-left'>
-                        <h1 class='oro-subtitle'>{{ "allies.logviewer.navigation.titles.files_list.label"|trans }}</h1>
-                        <h2 class='oro-subtitle'>{{ "allies.logviewer.ui.actions.grep.label"|trans }}</h2>
+                        <h1 class='oro-subtitle'>{{ "allies.logviewer.navigation.titles.files_list.label"|trans }} : {{ filename }}</h1>
+                        <p>
+                            <code>{{ pattern }}</code>
+                            {% if caseSensitive %}
+                                <em>{{ "Case Sensitive"|trans }}</em>
+                            {% endif %}
+                        </p>
                     </div>
                 </div>
                 <div class='pull-right title-buttons-container invisible'></div>
@@ -21,7 +26,18 @@
                     
     <div class='layout-content scrollable-container'>
         <div class='other-scroll-container'>
-            
+            <table class='table grid table-condensed table-bordered'>
+                <tbody>
+                    {% for row in output %}
+                        <tr>
+                            <td class='number-cell'><small>{{ row.lineNo }}</small></td>
+                            <td class='datetime-cell'><span style='white-space:nowrap'>{{ row.datetime }}</span></td>
+                            <td>{{ row.type }}</td>
+                            <td><pre>{{ row.message }}</pre></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 {% endblock content %}

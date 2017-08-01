@@ -44,7 +44,11 @@ class FileController extends Controller
      * @Route(
      *      "/read/{filename}/{start}/{lines}",
      *      name="allies_logviewer_file_view",
-     *      requirements={"filename"="^[a-zA-Z0-9][a-zA-Z0-9_\-]+\.log$", "start"="^\-?[0-9]+$", "lines"="^[0-9]+$"},
+     *      requirements={
+     *          "filename"="^[a-zA-Z0-9][a-zA-Z0-9_\-]+\.log$", 
+     *          "start"="^\-?[0-9]+$", 
+     *          "lines"="^[0-9]+$"
+     *      },
      *      defaults={"start"="-30", "lines"="30"}
      * )
      * @Template()
@@ -70,15 +74,40 @@ class FileController extends Controller
     
     /**
      * @Route(
-     *      "/grep/{filename}",
+     *      "/grep/{filename}/{pattern}/{start}/{lines}/{caseSensitive}",
      *      name="allies_logviewer_file_grep",
-     *      requirements={"filename"="^[a-zA-Z0-9][a-zA-Z0-9_\-]+\.log$"}
+     *      requirements={
+     *          "filename"="^[a-zA-Z0-9][a-zA-Z0-9_\-]+\.log$", 
+     *          "pattern"="[^/]+",
+     *          "start"="^[0-9]+$", 
+     *          "lines"="^[0-9]+$",
+     *          "caseSensitive"="^(0|1)?$"
+     *      },
+     *      defaults={"start"="0", "lines"="30", "caseSensitive"=0}
      * )
      * @AclAncestor("allies_logviewer_file_view")
      * @Template()
      */
-    public function grepAction($filename, $lines=30)
+    public function grepAction($filename, $pattern, $start=0, $lines=30, $caseSensitive=0)
     {
+        $caseSensitive = (bool)(int)$caseSensitive;
         
+        $flashBag = $this->get('session')->getFlashBag();
+        $provider = $this->container->get('allies.logviewer.provider.file');
+        
+        try {
+            $output = $provider->grepFileParsed($filename, $pattern, $start, $lines, $caseSensitive);
+        } catch (\Exception $e) {
+            $flashBag->add('error', $e->getMessage());
+            $output = [];
+        }
+        
+        return [
+            'filename' => $filename,
+            'pattern' => $pattern,
+            'lines' => $lines, 
+            'output' => $output,
+            'caseSensitive' => $caseSensitive,
+        ];
     }
 }

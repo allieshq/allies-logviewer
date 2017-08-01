@@ -96,6 +96,19 @@ class FileProvider
     }
     
     /**
+     * @param string $filename
+     * @param string $pattern
+     * @param integer $start
+     * @param integer $lines
+     * @param boolean $caseSensitive
+     * @return array
+     */
+    public function grepFileParsed($filename, $pattern, $start=0, $lines=30, $caseSensitive=false)
+    {
+        return $this->parseReadArray($this->grepFile($filename, $pattern, $start, $lines, $caseSensitive));
+    }
+    
+    /**
      * @param array $readArray
      * @return array
      */
@@ -174,6 +187,93 @@ class FileProvider
             $curLineNo++;
         }
         
+        fclose($handle);
+        
+        return $return;
+    }
+    
+    /**
+     * @param string $filename
+     * @param string $pattern
+     * @param integer $start
+     * @param integer $lines
+     * @param boolean $caseSensitive
+     * @return array
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
+     * @throws \BadMethodCallException
+     */
+    public function grepFile($filename, $pattern, $start=0, $lines=30, $caseSensitive=false)
+    {
+        $start = (int)$start;
+        $lines = (int)$lines;
+        
+        if ($lines <= 0) {
+            throw new \InvalidArgumentException(sprintf(
+                    "Total lines to read must be greater than zero. '%s' passed",
+                    $lines
+                ));
+        }
+        
+        $file = $this->getLogFilePath($filename);
+        if (!$file) {
+            throw new \RuntimeException(sprintf(
+                    "Cannot find file %s",
+                    $filename
+                ));
+        }
+        
+        if ($start < 0) {
+            throw new \BadMethodCallException(sprintf(
+                    "Negative start values not currently support for grep. '%s' passed",
+                    $lines
+                ));
+        }
+        
+        $delimiters = ['/','#','@','~','|'];
+        $regex = null;
+        foreach ($delimiters as $delimiter) {
+            if (false !== strpos($pattern, $delimiter)) {
+                continue;
+            }
+            
+            $regex = sprintf("%s%s%s%s",
+                    $delimiter,
+                    $pattern,
+                    $delimiter,
+                    ($caseSensitive) ? null : 'i'
+                );
+            break;
+        }
+        
+        if (is_null($regex)) {
+            throw new \RuntimeException(sprintf(
+                    "Could not find valid delimiter. Pattern: %s ; Delimiters: %s",
+                    $pattern,
+                    implode(', ', $delimiters)
+                ));
+        }
+        
+        $handle = fopen($file, "r");
+        $curLineNo = 0;
+        $matchingLineCount = 0;
+        $returnLineCount = 0;
+        $end = false;
+        $return = [];
+        
+        while (!feof($handle) && $returnLineCount < $lines) {
+            $line = fgets($handle);
+            $matches = [];
+            if (preg_match($regex, $line, $matches)) {
+                $matchingLineCount++;
+                if ($matchingLineCount >= $start) {
+                    $return[$curLineNo] = $line;
+                    $returnLineCount++;
+                }
+            }
+            
+            $curLineNo++;
+        }
         fclose($handle);
         
         return $return;
