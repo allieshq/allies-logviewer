@@ -20,18 +20,41 @@
                     
     <div class='layout-content scrollable-container'>
         <div class='other-scroll-container'>
-            <table class='table grid table-condensed table-bordered'>
-                <tbody>
-                    {% for row in output %}
+            {% if extension == 'log' %}
+                <table class='table grid table-condensed table-bordered'>
+                    <tbody>
+                        {% for row in output %}
+                            <tr>
+                                <td class='number-cell'><small>{{ row.lineNo }}</small></td>
+                                <td class='datetime-cell'><span style='white-space:nowrap'>{{ row.datetime }}</span></td>
+                                <td>{{ row.type }}</td>
+                                <td><pre>{{ row.message }}</pre></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% elseif extension == 'csv' %}
+                <table class='table grid table-condensed table-bordered'>
+                    <thead>
                         <tr>
-                            <td class='number-cell'><small>{{ row.lineNo }}</small></td>
-                            <td class='datetime-cell'><span style='white-space:nowrap'>{{ row.datetime }}</span></td>
-                            <td>{{ row.type }}</td>
-                            <td><pre>{{ row.message }}</pre></td>
+                            {% for title in output.headers %}
+                                <th>{{ title }}</th>
+                            {% endfor %}
                         </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {% for row in output.lines %}
+                            <tr>
+                                {% for value in row %}
+                                    <td>{{ value }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>{{ "Unknown log type"|trans }}</p>
+            {% endif %}
         </div>
     </div>
 {% endblock content %}

@@ -39,7 +39,8 @@ class FileProvider
         
         $di = new \DirectoryIterator($this->kernel->getLogDir());
         foreach ($di as $fileInfo) {
-            if (!$fileInfo->isDot() && !$fileInfo->isDir() && 'log' == $fileInfo->getExtension()) {
+            if (!$fileInfo->isDot() && !$fileInfo->isDir() && 
+                in_array($fileInfo->getExtension(), ['log', 'csv'])) {
                 $return[] = [
                     'filename' => $fileInfo->getFilename(),
                     'mtime' => $fileInfo->getMTime(),
@@ -48,6 +49,7 @@ class FileProvider
                     'size_readable' => $this->convertFileSize($fileInfo->getSize()),
                     'readable' => $fileInfo->isReadable(),
                     'lines' => $this->getFileLineCount($fileInfo->getFilename()),
+                    'extension' => $fileInfo->getExtension(),
                 ];
             }
         }
@@ -92,7 +94,14 @@ class FileProvider
      */
     public function readFileParsed($filename, $start=-30, $lines=30)
     {
-        return $this->parseReadArray($this->readFile($filename, $start, $lines));
+        if (substr($filename, -4) == '.csv') {
+            return $this->parseReadArrayCsv(
+                $this->readFile($filename, 0, 1),
+                $this->readFile($filename, $start, $lines)
+            );
+        } else {
+            return $this->parseReadArray($this->readFile($filename, $start, $lines));
+        }
     }
     
     /**
@@ -106,6 +115,30 @@ class FileProvider
     public function grepFileParsed($filename, $pattern, $start=0, $lines=30, $caseSensitive=false)
     {
         return $this->parseReadArray($this->grepFile($filename, $pattern, $start, $lines, $caseSensitive));
+    }
+    
+    /**
+     * @param array $readHeaders
+     * @param array $readArray
+     * @return array
+     * @throws \InvalidArgumentException
+     */
+    public function parseReadArrayCsv(array $readHeaders, array $readArray)
+    {
+        if (empty($readHeaders)) {
+            return ['headers' => [], 'lines' => []];
+        }
+        if (count($readHeaders) > 1 || !isset($readHeaders[0])) {
+            throw new \InvalidArgumentException("Headers must have a single element which is zero indexes");
+        }
+        if (isset($readArray[0])) {
+            unset($readArray[0]);
+        }
+        
+        return [
+            'headers' => current(array_map('str_getcsv', array_map('trim', $readHeaders))),
+            'lines' => array_map('str_getcsv', array_map('trim', $readArray)),
+        ];
     }
     
     /**

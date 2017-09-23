@@ -45,7 +45,7 @@ class FileController extends Controller
      *      "/read/{filename}/{start}/{lines}",
      *      name="allies_logviewer_file_view",
      *      requirements={
-     *          "filename"="^[a-zA-Z0-9][a-zA-Z0-9_\-]+\.log$", 
+     *          "filename"="^[a-zA-Z0-9][a-zA-Z0-9_\-\.]+\.(log|csv)$", 
      *          "start"="^\-?[0-9]+$", 
      *          "lines"="^[0-9]+$"
      *      },
@@ -67,6 +67,7 @@ class FileController extends Controller
         
         return [
             'filename' => $filename,
+            'extension' => substr($filename, -3),
             'lines' => $lines, 
             'output' => $output,
         ];
@@ -77,7 +78,7 @@ class FileController extends Controller
      *      "/grep/{filename}/{pattern}/{start}/{lines}/{caseSensitive}",
      *      name="allies_logviewer_file_grep",
      *      requirements={
-     *          "filename"="^[a-zA-Z0-9][a-zA-Z0-9_\-]+\.log$", 
+     *          "filename"="^[a-zA-Z0-9][a-zA-Z0-9_\-\.]+\.(log|csv)$", 
      *          "pattern"="[^/]+",
      *          "start"="^[0-9]+$", 
      *          "lines"="^[0-9]+$",
